@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="./styles/styles.css">
+  <link rel="stylesheet" href="./styles/animations.css">
+  <style>
+    body{
+  
+  width: 100%;
+  height: 100%;
+  background: #121212;
+  background: linear-gradient(
+    135deg,
+    #121212 25%,
+    #1a1a1a 25%,
+    #1a1a1a 50%,
+    #121212 50%,
+    #121212 75%,
+    #1a1a1a 75%,
+    #1a1a1a
+  );
+  background-size: 40px 40px;
+
+  /* Animation */
+  animation: move 4s linear infinite;
+}
+
+@keyframes move {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 40px 40px;
+  }
+}
+    
+.container{
+        width:100%;
+        padding-bottom: 20px;
+        min-width:100vw;
+        background-size:55px 55px
+    }
+    .card{
+  max-width:95%;
+  width:100%;
+  margin:0 auto;
+  background:rgba(20,20,20,.8);
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 0 25px rgba(0,255,255,.2);
+  transition:all .4s ease-in-out;
+  backdrop-filter:blur(8px);
+  transform-style:preserve-3d;
+  perspective:1000px
+}
+.card:hover{
+  transform:translateY(-8px) rotateX(3deg) rotateY(-3deg);
+  box-shadow:0 10px 30px rgba(0,255,255,.4)
+}
+.card-image{
+  width:100%;
+  height:100px;
+  object-fit:cover;
+  transition:all .4s ease-in-out
+}
+.card:hover .card-image{
+  transform:scale(1.05);
+  filter:brightness(1.1) contrast(1.1)
+}
+.card-content{padding:20px}
+.card-title{
+  font-size:24px;
+  margin-bottom:10px;
+  color:#00ffff;
+  text-shadow:0 0 5px rgba(0,255,255,.6)
+}
+.card-description{
+  font-size:15px;
+  color:#ccc;
+  line-height:1.5;
+  margin-bottom:20px
+}
+
+
+.card-link{
+  padding:10px 20px;
+  font-size:13px;
+  border-radius:20px
+}
+
+@media(max-width:1024px){
+  .parent{grid-template-columns:repeat(3,1fr)}
+  .card{width:90%;margin-bottom:30px}
+  .card-image{height:220px}
+}
+
+@media(max-width:768px){
+  .parent{grid-template-columns:1fr;gap:18px;padding:40px 15px 0 15px}
+  .card{width:100%;margin-bottom:25px}
+  .card-image{height:200px}
+  .card-title{font-size:22px}
+  .card-description{font-size:14px}
+  .language-tag{padding:5px 8px;font-size:12px}
+  .card-link{padding:8px 16px;font-size:12px}
+}
+
+@media(max-width:480px){
+  .parent{padding:30px 10px 0 10px}
+  .card-image{height:160px}
+  .card-title{font-size:20px}
+  .card-description{font-size:13px}
+}
+
+@media(min-width:640px) and (max-width:1023px){
+  .parent{grid-template-columns:repeat(2,1fr)}
+}
+
+@media(max-width:639px){
+  .parent{grid-template-columns:1fr}
+}
+  </style>
+  <script src="https://kit.fontawesome.com/68a9b0b573.js" crossorigin="anonymous"></script>
+</head>
+<body class="min-h-screen overflow-x-hidden  text-white">
+  <nav class="bg-gradient-to-l from-[#1b0033] via-[#430249] to-[#5e0b4e] shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16 items-center">
+        <div class="flex-shrink-0 text-white text-[30px] font-bold" style="animation: slideRight 0.7s ease-in;">MyPortfolio</div>
+        <div class="hidden md:flex space-x-6 text-white font-medium text-[18px]">
+          <a href="index.html" class="hover:text-purple-300 transition link-underline">Home</a>
+          <a href="about.html" class="hover:text-purple-300 transition link-underline">About</a>
+          <a href="portfolio.html" class="hover:text-purple-300 transition link-underline">Portfolio</a>
+          <a href="services.html" class="hover:text-purple-300 transition link-underline">Services</a>
+        </div>
+        <div class="hidden md:block" style="animation: slideLeft 0.7s ease-out;">
+          <a href="contact.html" class="bg-white text-indigo-700 px-4 py-2 rounded-xl hover:bg-yellow-300 transition-all font-semibold">Contact</a>
+        </div>
+        <div class="md:hidden">
+          <input type="checkbox" id="checkbox">
+          <label for="checkbox" class="toggle" style="animation: slideLeft 0.7s ease-out;">
+            <div class="bars" id="bar1"></div>
+            <div class="bars" id="bar2"></div>
+            <div class="bars" id="bar3"></div>
+          </label>
+        </div>
+      </div>
+    </div>
+    <div id="mobile-menu" class="z-2 text-[18px] md:hidden hidden px-4 pb-4 space-y-2 text-white font-medium">
+      <a href="index.html" class="link-underline block hover:text-yellow-300 transition">Home</a>
+      <a href="about.html" class="link-underline block hover:text-yellow-300 transition">About</a>
+      <a href="services.html" class="link-underline block hover:text-yellow-300 transition">Services</a>
+      <a href="portfolio.html" class="link-underline block hover:text-yellow-300 transition">Portfolio</a>
+      <a href="contact.html" class="block bg-white text-indigo-700 text-center px-4 py-2 rounded-xl hover:bg-yellow-300 transition-all font-semibold mt-2">Contact</a>
+    </div>
+  </nav>
+
+  <section class="container" style="display:flex;flex-direction:column;padding-top:60px;">
+    <h1 class="text-3xl sm:text-4xl md:text-[50px] font-bold text-white text-center mb-6" style="animation: slideUp 0.7s ease-in;">Services I can handle :</h1>
+    <div class="parent" style="animation: slideUp .8s ease-in-out;">
+      <div class="card animate__animated animate__fadeInUp" style="display: flex; justify-content: space-evenly; align-items: center; flex-direction: column;">
+        <div class="card-image" style="display: flex; justify-content: space-evenly; align-items: center; flex-direction: column; text-align: center; font-size: 50px;">💻</div>
+        <div class="card-content" style="display: flex; justify-content: space-evenly; align-items: center; flex-direction: column; text-align: center;">
+            <h2 class="card-title animate__animated animate__fadeInDown">Web Development</h2>
+            <p class="card-description animate__animated animate__fadeIn">Custom websites and web applications built with modern technologies and best practices.</p>
+            <div class="hidden md:block"  style="animation: slideLeft 0.7s ease-out;">
+          <a href="#" class="bg-white text-indigo-700 px-4 py-2 rounded-xl hover:bg-yellow-300 transition-all font-semibold">Contact</a>
+        </div>
+        </div>
+        </div>
+        <div class="card animate__animated animate__fadeInUp" style="display: flex; justify-content: space-evenly; align-items: center; flex-direction: column;">
+        <div class="card-image" style="display: flex; justify-content: space-evenly; align-items: center; flex-direction: column; text-align: center; font-size: 50px;">🎨</div>
+        <div class="card-content" style="display: flex; justify-content: space-evenly; align-items: center; flex-direction: column; text-align: center;">
+            <h2 class="card-title animate__animated animate__fadeInDown">UI/UX Design</h2>
+            <p class="card-description animate__animated animate__fadeIn">User-centered design solutions that create engaging and intuitive experiences</p>
+            <div class="hidden md:block"  style="animation: slideLeft 0.7s ease-out;">
+          <a href="#" class="bg-white text-indigo-700 px-4 py-2 rounded-xl hover:bg-yellow-300 transition-all font-semibold">Contact</a>
+        </div>
+        </div>
+        </div>
+        <div class="card animate__animated animate__fadeInUp" style="display: flex; justify-content: space-evenly; align-items: center; flex-direction: column;">
+        <div class="card-image" style="display: flex; justify-content: space-evenly; align-items: center; flex-direction: column; text-align: center; font-size: 50px;">⚡</div>
+        <div class="card-content" style="display: flex; justify-content: space-evenly; align-items: center; flex-direction: column; text-align: center;">
+            <h2 class="card-title animate__animated animate__fadeInDown">Performance Optimization</h2>
+            <p class="card-description animate__animated animate__fadeIn">Speed up your existing applications and improve user experience.</p>
+            <div class="hidden md:block"  style="animation: slideLeft 0.7s ease-out;">
+          <a href="#" class="bg-white text-indigo-700 px-4 py-2 rounded-xl hover:bg-yellow-300 transition-all font-semibold">Contact</a>
+        </div>
+        </div>
+        </div>
+        <div class="card animate__animated animate__fadeInUp" style="display: flex; justify-content: space-evenly; align-items: center; flex-direction: column;">
+        <div class="card-image" style="display: flex; justify-content: space-evenly; align-items: center; flex-direction: column; text-align: center; font-size: 50px;">🔧</div>
+        <div class="card-content" style="display: flex; justify-content: space-evenly; align-items: center; flex-direction: column; text-align: center;">
+            <h2 class="card-title animate__animated animate__fadeInDown">Maintenance & Support</h2>
+            <p class="card-description animate__animated animate__fadeIn">Ongoing maintenance, updates, and technical support for your projects.</p>
+            <div class="hidden md:block"  style="animation: slideLeft 0.7s ease-out;">
+          <a href="#" class="bg-white text-indigo-700 px-4 py-2 rounded-xl hover:bg-yellow-300 transition-all font-semibold">Contact</a>
+        </div>
+        </div>
+        </div>
+        <div class="card animate__animated animate__fadeInUp" style="display: flex; justify-content: space-evenly; align-items: center; flex-direction: column;">
+        <div class="card-image" style="display: flex; justify-content: space-evenly; align-items: center; flex-direction: column; text-align: center; font-size: 50px;">🚀</div>
+        <div class="card-content" style="display: flex; justify-content: space-evenly; align-items: center; flex-direction: column; text-align: center;">
+            <h2 class="card-title animate__animated animate__fadeInDown">Consulting</h2>
+            <p class="card-description animate__animated animate__fadeIn">Technical consulting and architecture planning for your development projects.</p>
+            <div class="hidden md:block"  style="animation: slideLeft 0.7s ease-out;">
+          <a href="#" class="bg-white text-indigo-700 px-4 py-2 rounded-xl hover:bg-yellow-300 transition-all font-semibold">Contact</a>
+        </div>
+        </div>
+        </div>
+        <div class="card animate__animated animate__fadeInUp" style="display: flex; justify-content: space-evenly; align-items: center; flex-direction: column;">
+        <div class="card-image" style="display: flex; justify-content: space-evenly; align-items: center; flex-direction: column; text-align: center; font-size: 50px;"><img src="https://img.icons8.com/?size=100&id=76948&format=png&color=000000"></div>
+        <div class="card-content" style="display: flex; justify-content: space-evenly; align-items: center; flex-direction: column; text-align: center;">
+            <h2 class="card-title animate__animated animate__fadeInDown">Money saving</h2>
+            <p class="card-description animate__animated animate__fadeIn">Explore my services economicaly</p>
+            <div class="hidden md:block"  style="animation: slideLeft 0.7s ease-out;">
+          <a href="#" class="bg-white text-indigo-700 px-4 py-2 rounded-xl hover:bg-yellow-300 transition-all font-semibold">Contact</a>
+        </div>
+        </div>
+        </div>
+      
+    </div>
+    
+  </section>
+  <script src="script.js"></script>
+</body>
+</html>

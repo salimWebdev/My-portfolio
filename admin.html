@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin · Messages</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Tailwind dark‑mode set‑up (optional)
+    tailwind.config = { darkMode: 'class' };
+  </script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-purple-950 via-purple-800 to-purple-700 text-gray-100 font-sans flex items-center justify-center p-4">
+
+  <!-- Login Card -->
+  <div id="loginCard" class="w-full max-w-sm bg-gray-900/70 backdrop-blur-lg rounded-2xl shadow-xl p-8 space-y-6">
+    <h1 class="text-2xl font-extrabold text-center">Admin Login</h1>
+    <form id="loginForm" class="space-y-4">
+      <div>
+        <label class="block mb-1 text-sm" for="email">Email</label>
+        <input id="email" type="email" required class="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-amber-500 outline-none" placeholder="admin@example.com" />
+      </div>
+      <div>
+        <label class="block mb-1 text-sm" for="password">Password</label>
+        <input id="password" type="password" required class="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-amber-500 outline-none" placeholder="••••••••" />
+      </div>
+      <button type="submit" class="w-full py-2 font-bold rounded-lg bg-amber-500 hover:bg-amber-600 text-black transition">Sign In</button>
+    </form>
+    <p id="loginError" class="text-sm text-red-400 text-center hidden"></p>
+  </div>
+
+  <!-- Dashboard -->
+  <section id="dashboard" class="hidden w-full max-w-5xl mx-auto">
+    <header class="flex items-center justify-between mb-6">
+      <h2 class="text-3xl font-bold">📥 Messages</h2>
+      <button id="logoutBtn" class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 font-semibold">Logout</button>
+    </header>
+
+    <!-- Table -->
+    <div class="overflow-x-auto rounded-xl shadow-lg">
+      <table class="w-full text-left whitespace-nowrap bg-gray-900/70 backdrop-blur-lg rounded-xl">
+        <thead>
+          <tr class="bg-purple-950/80">
+            <th class="px-4 py-3 font-semibold">Name</th>
+            <th class="px-4 py-3 font-semibold">Email</th>
+            <th class="px-4 py-3 font-semibold">Message</th>
+            <th class="px-4 py-3 font-semibold">Date</th>
+            <th class="px-4 py-3"></th>
+          </tr>
+        </thead>
+        <tbody id="messagesBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Firebase SDK & App Logic -->
+  <script type="module">
+    // 1️⃣ Import Firebase modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
+    import { getFirestore, collection, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js";
+
+    // 2️⃣ Your web-app's Firebase configuration
+    // Replace placeholders with your real config values
+    const firebaseConfig = {
+      apiKey: "AIzaSyAORNs9OVnKV-ZgXf_iN-C4ckdZiiuSxd4",
+   authDomain: "my-portfolio-f865b.firebaseapp.com",
+   projectId: "my-portfolio-f865b",
+
+   storageBucket: "my-portfolio-f865b.appspot.com", 
+   messagingSenderId: "864051467596",
+   appId: "1:864051467596:web:0b5928fa519e288bd32be9",
+   measurementId: "G-KKEKG2BYKC"
+    };
+
+    // 3️⃣ Initialize Firebase
+    const app   = initializeApp(firebaseConfig);
+    const auth  = getAuth(app);
+    const db    = getFirestore(app);
+
+    // 🔐 Elements
+    const loginCard   = document.getElementById('loginCard');
+    const loginForm   = document.getElementById('loginForm');
+    const loginError  = document.getElementById('loginError');
+    const dashboard   = document.getElementById('dashboard');
+    const messagesBody = document.getElementById('messagesBody');
+    const logoutBtn   = document.getElementById('logoutBtn');
+
+    // 4️⃣ Login handler
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = loginForm.email.value;
+      const password = loginForm.password.value;
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (err) {
+        loginError.textContent = err.message;
+        loginError.classList.remove('hidden');
+      }
+    });
+
+    // 5️⃣ Auth state listener
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // Hide login, show dashboard
+        loginCard.classList.add('hidden');
+        dashboard.classList.remove('hidden');
+        loadMessages();
+      } else {
+        dashboard.classList.add('hidden');
+        loginCard.classList.remove('hidden');
+        loginError.classList.add('hidden');
+        messagesBody.innerHTML = '';
+      }
+    });
+
+    // 6️⃣ Logout
+    logoutBtn.addEventListener('click', () => signOut(auth));
+
+    // 7️⃣ Load messages
+    async function loadMessages() {
+      messagesBody.innerHTML = '<tr><td colspan="5" class="p-4 text-center">Loading…</td></tr>';
+      try {
+        const q = query(collection(db, 'messages'), orderBy('created', 'desc'));
+        const snap = await getDocs(q);
+        if (snap.empty) {
+          messagesBody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-400">No messages yet</td></tr>';
+          return;
+        }
+        messagesBody.innerHTML = '';
+        snap.forEach((docSnap) => {
+          const data = docSnap.data();
+          const tr = document.createElement('tr');
+          tr.classList.add('odd:bg-gray-900/40');
+          tr.innerHTML = `
+            <td class="px-4 py-3">${data.name}</td>
+            <td class="px-4 py-3">${data.email}</td>
+            <td class="px-4 py-3 max-w-xs break-words">${data.message}</td>
+            <td class="px-4 py-3 text-sm">${new Date(data.created).toLocaleString()}</td>
+            <td class="px-4 py-3 text-right">
+              <button data-id="${docSnap.id}" class="deleteBtn text-red-500 hover:text-red-700">Delete</button>
+            </td>`;
+          messagesBody.appendChild(tr);
+        });
+        // Attach delete handlers
+        document.querySelectorAll('.deleteBtn').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            if (confirm('Delete this message?')) {
+              await deleteDoc(doc(db, 'messages', btn.dataset.id));
+              loadMessages();
+            }
+          });
+        });
+      } catch (err) {
+        messagesBody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-400">${err.message}</td></tr>`;
+      }
+    }
+  </script>
+</body>
+</html>
